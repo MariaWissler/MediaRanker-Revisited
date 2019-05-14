@@ -58,5 +58,23 @@ describe UsersController do
       must_respond_with :redirect
       must_redirect_to root_path
     end
+
+    it "redirects and gives flash notice if a new user fails to save" do
+      # Arrange
+      new_user = User.new(provider: "github", uid: "1123", username: nil, email: nil)
+
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(new_user))
+
+      # Act-Assert
+      expect {
+        get auth_callback_path(:github)
+      }.wont_change "User.count"
+
+      expect(flash[:status]).must_equal :error
+      expect(flash[:result_text]).must_equal "Couldn't create new user account"
+
+      must_respond_with :redirect
+      must_redirect_to root_path
+    end
   end
 end
