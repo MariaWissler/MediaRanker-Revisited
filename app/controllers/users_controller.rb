@@ -36,13 +36,39 @@ class UsersController < ApplicationController
 
   def create
     auth_hash = request.env["omniauth.auth"]
-    raise
+    user = User.find_by(uid: auth_hash[:uid], provider: "github")
+    if user
+      # User found
+      flash[:status] = :success
+      flash[:result_text] = "Logged in as returning user #{user.name}"
+    else # user not found
+      user = User.make_from_github(auth_hash)
+      if user.save
+        flash[:status] = :success
+        flash[:result_message] = "Logged in as new user #{user.name}"
+      else
+        flash[:status] = :error
+        flash[:result_text] = "Couldn't create new user account"
+        flash[:messages] = user.errors.messages
+        return redirect_to root_path
+      end
+    end
+    #valid user?
+    session[:user_id] = user.id
+    return redirect_to root_path
   end
 
-  def logout
+  # def logout
+  #   session[:user_id] = nil
+  #   flash[:status] = :success
+  #   flash[:result_text] = "Successfully logged out"
+  #   redirect_to root_path
+  # end
+  def destroy
     session[:user_id] = nil
     flash[:status] = :success
     flash[:result_text] = "Successfully logged out"
+
     redirect_to root_path
   end
 end
