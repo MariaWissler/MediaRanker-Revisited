@@ -234,7 +234,19 @@ describe WorksController do
     end
 
     it "redirects to the work page if the user has already voted for that work" do
-      skip
+      perform_login
+
+      work = works(:album)
+
+      expect {
+        post upvote_path(work.id)
+      }.wont_change "Vote.count"
+
+      must_respond_with :redirect
+      must_redirect_to work_path(work.id)
+      expect(flash[:status]).must_equal :failure
+      expect(flash[:result_text]).must_equal "Could not upvote"
+      expect(flash[:messages]).must_equal :user => ["has already voted for this work"]
     end
   end
 end
