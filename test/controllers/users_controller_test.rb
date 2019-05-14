@@ -27,22 +27,8 @@ describe UsersController do
     end
   end
 
-  describe "login" do
-    it "log in existing user" do
-      user = users(:dan)
-
-      expect {
-        perform_login(user)
-      }.wont_change "User.count"
-    end
-  end
-
   describe "create" do
     it "creates a new user if user has not been saved before" do
-      # Arrange
-      user_count = User.count
-
-      # Act
       new_user = User.new(provider: "github", uid: "1123", username: "carmelina@email.com", email: "carmelina@email.com")
 
       OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(new_user))
@@ -59,9 +45,19 @@ describe UsersController do
       must_redirect_to root_path
     end
 
-    it "redirects and gives flash notice if a new user fails to save" do
-      # Arrange
-      new_user = User.new(provider: "github", uid: "1123", username: nil, email: nil)
+    it "logs in a returning user but does not add a new user to db" do
+      user = users(:dan)
+      expect {
+        perform_login(user)
+      }.wont_change "User.count"
+
+      expect(session[:user_id]).must_equal users(:dan).id
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Logged in as returning user #{user.username}"
+    end
+
+    it "redirects and gives a flash notice if a new user fails to save" do
+      new_user = User.new(provider: "github", uid: "777", username: nil, email: nil)
 
       OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(new_user))
 

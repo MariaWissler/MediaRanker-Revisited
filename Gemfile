@@ -72,3 +72,5 @@ gem "omniauth"
 gem "omniauth-github"
 gem 'dotenv-rails' 
 
+gem 'simplecov', require: false, group: :test
+
