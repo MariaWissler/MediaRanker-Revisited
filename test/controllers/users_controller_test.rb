@@ -26,4 +26,14 @@ describe UsersController do
       must_respond_with 404
     end
   end
+
+  describe "login" do
+    it "log in existing user" do
+      user = users(:dan)
+
+      expect {
+        perform_login(user)
+      }.wont_change "User.count"
+    end
+  end
 end
