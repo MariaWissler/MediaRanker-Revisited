@@ -17,5 +17,13 @@ describe UsersController do
       # Assert
       must_respond_with :success
     end
+
+    it "will redirect and give a flash notice for an invalid user" do
+      # Act
+      get user_path(-1)
+      # Assert
+      must_respond_with :not_found
+      must_respond_with 404
+    end
   end
 end
