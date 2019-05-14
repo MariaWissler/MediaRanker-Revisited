@@ -36,4 +36,27 @@ describe UsersController do
       }.wont_change "User.count"
     end
   end
+
+  describe "create" do
+    it "creates a new user if user has not been saved before" do
+      # Arrange
+      user_count = User.count
+
+      # Act
+      new_user = User.new(provider: "github", uid: "1123", username: "carmelina@email.com", email: "carmelina@email.com")
+
+      OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(mock_auth_hash(new_user))
+
+      # Act-Assert
+      expect {
+        get auth_callback_path(:github)
+      }.must_change "User.count", 1
+
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_message]).must_equal "Logged in as new user #{new_user.email}"
+
+      must_respond_with :redirect
+      must_redirect_to root_path
+    end
+  end
 end

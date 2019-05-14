@@ -40,12 +40,12 @@ class UsersController < ApplicationController
     if user
       # User found
       flash[:status] = :success
-      flash[:result_text] = "Logged in as returning user #{user.name}"
+      flash[:result_text] = "Logged in as returning user #{user.username}"
     else # user not found
       user = User.make_from_github(auth_hash)
       if user.save
         flash[:status] = :success
-        flash[:result_message] = "Logged in as new user #{user.name}"
+        flash[:result_message] = "Logged in as new user #{user.username}"
       else
         flash[:status] = :error
         flash[:result_text] = "Couldn't create new user account"
