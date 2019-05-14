@@ -77,4 +77,25 @@ describe UsersController do
       must_redirect_to root_path
     end
   end
+
+  describe "destroy" do
+    it "successfully logout/-in user" do
+      # Arrange
+      user = users(:kari)
+      perform_login(user)
+
+      # Act - Assert
+      expect {
+        delete logout_path
+      }.wont_change "User.count"
+
+      expect(flash[:status]).must_equal :success
+      expect(flash[:result_text]).must_equal "Successfully logged out"
+
+      session[:user_id].must_be_nil
+
+      must_respond_with :redirect
+      must_redirect_to root_path
+    end
+  end
 end
