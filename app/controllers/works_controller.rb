@@ -2,7 +2,6 @@ class WorksController < ApplicationController
   # We should always be able to tell what category
   # of work we're dealing with
   before_action :category_from_work, except: [:root, :index, :new, :create]
-  before_action :find_user, only: [:index, :show]
 
   def root
     @albums = Work.best_albums
@@ -17,7 +16,7 @@ class WorksController < ApplicationController
     else
       redirect_to root_path
       flash[:status] = :failure
-      flash[:result_text] = "You must log-in to view this page"
+      flash[:result_text] = "You must login to view this page"
     end
   end
 
@@ -46,7 +45,7 @@ class WorksController < ApplicationController
     else
       redirect_to root_path
       flash[:status] = :failure
-      flash[:result_text] = "You must log-in to view this page"
+      flash[:result_text] = "You must login to view this page"
     end
   end
 
