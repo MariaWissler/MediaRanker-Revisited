@@ -19,14 +19,14 @@ describe Work do
     end
   end
 
-  describe "validations" do
-    it "allows the three valid categories" do
-      valid_categories = ["album", "book", "movie"]
-      valid_categories.each do |category|
-        work = Work.new(title: "test", category: category)
-        work.valid?.must_equal true
-      end
-    end
+  # describe "validations" do
+  #   it "allows the three valid categories" do
+  #     valid_categories = ["album", "book", "movie"]
+  #     valid_categories.each do |category|
+  #       work = Work.new(title: "test", category: category)
+  #       work.valid?.must_equal true
+  #     end
+  #   end
 
     it "fixes almost-valid categories" do
       categories = ["Album", "albums", "ALBUMS", "books", "mOvIeS"]
